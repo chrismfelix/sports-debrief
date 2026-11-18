@@ -1,0 +1,34 @@
+# PUBLIC REPO: no video, frames, pose data or secrets. Ever.
+# Scripts write all output to data/. Add rules here when a real need shows up.
+
+# --- Local data: clips, frames, pose output, results ---
+data/
+
+# --- Video (both cases: iPhone writes .MOV, GoPro writes .MP4) ---
+*.[mM][pP]4
+*.[mM][oO][vV]
+*.[mM]4[vV]
+*.[aA][vV][iI]
+*.[mM][kK][vV]
+*.[wW][eE][bB][mM]
+*.[hH][eE][vV][cC]
+*.[lL][rR][vV]
+*.[iI][nN][sS][vV]
+
+# --- Images: extracted frames and skeleton overlays ---
+# To commit an image on purpose, add a negation for its folder (e.g. !docs/img/**).
+*.[jJ][pP][gG]
+*.[jJ][pP][eE][gG]
+*.[pP][nN][gG]
+*.[hH][eE][iI][cC]
+
+# --- Secrets ---
+.env
+.env.*
+
+# --- Python ---
+__pycache__/
+.venv/
+
+# --- OS ---
+.DS_Store

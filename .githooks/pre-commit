@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Blocks commits that could leak clips, frames, pose data or secrets. This repo is public.
+# Enable once per clone:  git config core.hooksPath .githooks
+#
+# .gitignore is the one list of what stays out. This hook rejects any staged file it
+# matches (catching `git add -f`), plus two things .gitignore can't express.
+# To allow a file on purpose, add a negation to .gitignore (e.g. !docs/img/**).
+set -euo pipefail
+
+max_bytes=$((1024 * 1024))
+failed=0
+
+block() {
+  printf '  %s  (%s)\n' "$1" "$2" >&2
+  failed=1
+}
+
+while IFS= read -r -d '' path; do
+  if git check-ignore --no-index -q -- "$path"; then
+    block "$path" "matches .gitignore"
+    continue
+  fi
+
+  case "$path" in
+    spikes/*.py | spikes/.gitkeep) ;;
+    spikes/*) block "$path" "spikes/ holds only .py scripts; output goes to data/"; continue ;;
+  esac
+
+  if [ "$(git cat-file -s ":$path")" -gt "$max_bytes" ]; then
+    block "$path" "over 1 MB"
+  fi
+done < <(git diff --cached --name-only -z --diff-filter=ACMRT)
+
+if [ "$failed" -ne 0 ]; then
+  echo "Commit blocked: this repo is public. Unstage the files above (git restore --staged <file>)." >&2
+  exit 1
+fi

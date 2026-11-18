@@ -1,0 +1,8 @@
+[project]
+name = "sports-debrief"
+version = "0.0.0"
+description = "Upload a clip of yourself; get back a coach's debrief with one thing to fix."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = []
